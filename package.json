@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "task1": "nodemon task-1.1.js",
     "task2": "nodemon task-1.2.js ./assets/nodejs-hw1-ex1.csv ./assets/result.txt",
+    "task2-ram": "nodemon task-1.2-ram.js ./assets/nodejs-hw1-ex1.csv ./assets/result.txt",
     "task3": "nodemon task-1.3.ts ./assets/nodejs-hw1-ex1.csv ./assets/result.txt"
   },
   "repository": {

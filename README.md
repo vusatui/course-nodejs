@@ -11,6 +11,11 @@ $ npm run task1
 $ npm run task2
 ```
 
+## Task 1.2-ram
+```bash
+$ npm run task2-ram
+```
+
 ## Task 1.3
 ```bash
 $ npm run task3
