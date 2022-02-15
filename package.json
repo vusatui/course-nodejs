@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "task-1": "nodemon task-1/index.ts",
+    "task-2": "nodemon task-2/index.ts",
     "lint": "eslint \"**/*.(js|ts)\" --ignore-pattern node_modules/ "
   },
   "repository": {
@@ -30,6 +31,7 @@
   },
   "dependencies": {
     "express": "^4.17.2",
+    "express-joi-validation": "^5.0.1",
     "uuid": "^8.3.2"
   }
 }
