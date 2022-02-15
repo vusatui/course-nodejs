@@ -24,7 +24,7 @@ const validator = createValidator()
 const CreateUserSchema = Joi.object({
     login: Joi.string().required(),
     password: Joi.string().alphanum().required(),
-    age: Joi.number().min(4).max(130)
+    age: Joi.number().min(4).max(130).required()
 })
 
 interface CreateUserRequestSchema extends ValidatedRequestSchema {
@@ -54,7 +54,7 @@ export default (router: IRouter, usersStorage: Array<User>) => {
         res.json({ body: res.locals.user, message: "ok" });
     });
 
-    router.post("/", validator.query(CreateUserSchema), (req: ValidatedRequest<CreateUserRequestSchema>, res) => {
+    router.post("/", validator.body(CreateUserSchema), (req: ValidatedRequest<CreateUserRequestSchema>, res) => {
         const { login, password, age } = req.body;
         const newUser: User = {
             id: uuid.v4(),
