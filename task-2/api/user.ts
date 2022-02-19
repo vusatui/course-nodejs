@@ -35,6 +35,20 @@ interface CreateUserRequestSchema extends ValidatedRequestSchema {
     }
 }
 
+const UpdateUserSchema = Joi.object({
+    login: Joi.string(),
+    password: Joi.string().alphanum(),
+    age: Joi.number().min(4).max(130),
+})
+
+interface UpdateUserRequestSchema extends ValidatedRequestSchema {
+    [ContainerTypes.Query]: {
+        login: string
+        password: string
+        age: number
+    }
+}
+
 const validateUser: RequestHandler = (req, res, next) => {
     if (res.locals.user === undefined) {
         res.status(404).json({ message: `User with id ${req.params.id} not found.` });
@@ -67,7 +81,7 @@ export default (router: IRouter, usersStorage: Array<User>) => {
         res.json({ body: { id: newUser.id }, message: "ok" });
     });
 
-    router.put("/:id", validateUser, (req, res) => {
+    router.put("/:id", validateUser, validator.body(UpdateUserSchema), (req: ValidatedRequest<UpdateUserRequestSchema>, res) => {
         const user: User = res.locals.user;
 
         const {
