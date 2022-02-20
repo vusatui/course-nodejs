@@ -20,4 +20,24 @@ export default class UserService {
 
        return user.id;
     }
+
+    async getById(id: number) {
+        return UserModel.findOneOrFail(id);
+    }
+
+    async updateUser(id: number, userDTO: User) {
+        const user = await UserModel.findOneOrFail(id);
+        user.login = userDTO.login;
+        user.password = userDTO.password;
+        user.age = userDTO.age;
+        await UserModel.update(user.id, user);
+        return user.id;
+    }
+
+    async deleteUser(id: number) {
+        const user = await UserModel.findOneOrFail(id);
+        user.isDeleted = true;
+        await UserModel.update(user.id, user);
+        return user.id;
+    }
 }

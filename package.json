@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/vusatui/course-nodejs#readme",
   "devDependencies": {
+    "@faker-js/faker": "^6.0.0-alpha.6",
     "@types/express": "^4.17.13",
     "@types/joi": "^17.2.3",
     "@types/node": "^17.0.18",

@@ -4,7 +4,6 @@ import {
 import { Container } from "typedi";
 
 import validateUserDTO from "../middlewares/validateUserDTO";
-import checkIfUserExists from "../middlewares/checkIfUserExists";
 import UserService from "../../services/UserService";
 
 const userRouter = Router();
@@ -16,16 +15,34 @@ userRouter.post("/", validateUserDTO(), async (req, res) => {
     res.json({ result: { id }, message: "ok" });
 });
 
-userRouter.get("/:id", checkIfUserExists(), (req, res) => {
-    // TODO: send user info.
+userRouter.get("/:id", async (req, res) => {
+    try {
+        const user = await userService.getById(Number(req.params.id));
+
+        res.json({ result: { user }, message: "ok" });
+    } catch(error) {
+        res.status(400).json({ error: { message: error.message } });
+    }
 })
 
-userRouter.put("/:id", checkIfUserExists(), validateUserDTO(), (req, res) => {
-   // TODO: update user info.
+userRouter.put("/:id", validateUserDTO(), async (req, res) => {
+    try {
+        const id = await userService.updateUser(Number(req.params.id), req.body);
+
+        res.json({result: { id }, message: "ok"});
+    } catch (error) {
+        res.status(400).json({error: { message: error.message }});
+    }
 });
 
-userRouter.delete("/:id", checkIfUserExists(), (req, res) => {
-   // TODO: softly remove the user.
+userRouter.delete("/:id", async (req, res) => {
+    try {
+        const id = await userService.deleteUser(Number(req.params.id));
+
+        res.json({ result: { id }, message: "ok"});
+    } catch (error) {
+        res.status(400).json({ error: { message: error.message }});
+    }
 });
 
 export default (router: Router) => {

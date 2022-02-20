@@ -15,6 +15,10 @@ export const expressLoader = (settings: MicroframeworkSettings) => {
         res.end("ok");
     });
 
+    app.all("*", (req, res) => {
+        res.status(404).end();
+    })
+
     app.listen(config.expressPort, () => {
         console.log(`Server listening on port: ${config.expressPort}`);
     });
