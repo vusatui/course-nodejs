@@ -6,7 +6,7 @@ import UserSchema from "./UserSchema";
 import { User } from "./types";
 import UserModel from "../../models/UserModel";
 import { FindManyOptions } from "typeorm/find-options/FindManyOptions";
-import {Like} from "typeorm";
+import { Like } from "typeorm";
 
 
 @Service()
