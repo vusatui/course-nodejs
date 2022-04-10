@@ -5,6 +5,8 @@ import {
 import UserSchema from "./UserSchema";
 import { User } from "./types";
 import UserModel from "../../models/UserModel";
+import { FindManyOptions } from "typeorm/find-options/FindManyOptions";
+import {Like} from "typeorm";
 
 
 @Service()
@@ -39,5 +41,16 @@ export default class UserService {
         user.isDeleted = true;
         await UserModel.update(user.id, user);
         return user.id;
+    }
+
+    async getAutoSuggestUsers(loginSubstring: string, limit: number) {
+        const options: FindManyOptions<UserModel> = {
+            take: limit || 100,
+            where: {
+                login: Like(`%${loginSubstring.trim()}%`),
+            },
+        };
+
+        return UserModel.find(options);
     }
 }

@@ -15,6 +15,22 @@ userRouter.post("/", validateUserDTO(), async (req, res) => {
     res.json({ result: { id }, message: "ok" });
 });
 
+
+userRouter.get("/getAutoSuggestUsers", async (req, res) => {
+    try {
+        const {
+            loginSubstring,
+            limit,
+        } = req.body;
+
+        const users = await userService.getAutoSuggestUsers(loginSubstring, limit);
+
+        res.json({ result: { users }, message: "ok" });
+    } catch(error) {
+        res.status(400).json({ error: { message: error.message } });
+    }
+});
+
 userRouter.get("/:id", async (req, res) => {
     try {
         const user = await userService.getById(Number(req.params.id));
@@ -23,7 +39,7 @@ userRouter.get("/:id", async (req, res) => {
     } catch(error) {
         res.status(400).json({ error: { message: error.message } });
     }
-})
+});
 
 userRouter.put("/:id", validateUserDTO(), async (req, res) => {
     try {
