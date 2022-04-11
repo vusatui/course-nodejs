@@ -27,6 +27,20 @@ groupRouter.post("/", async (req, res) => {
    );
 });
 
+groupRouter.post("/addUsersToGroup", async (req, res) => {
+   await handler(async () => {
+            const {
+                groupId,
+                userIds,
+            } = req.body;
+
+           await groupService.addUsersToGroup(groupId, userIds);
+           res.json({ message: "ok" });
+       },
+       res,
+   );
+});
+
 groupRouter.get("/:id", async (req, res) => {
     await handler(async () => {
         const group = await groupService.getById(req.params.id);

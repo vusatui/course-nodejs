@@ -5,6 +5,8 @@ import {
     Permission,
 } from "./types";
 import GroupModel from "../../models/GroupModel";
+import UserModel from "../../models/UserModel";
+import {getManager} from "typeorm";
 
 @Service()
 export default class GroupService {
@@ -37,5 +39,16 @@ export default class GroupService {
 
     async deleteGroup(id: string) {
         await GroupModel.delete(id);
+    }
+
+    async addUsersToGroup(groupId: string, userIds: string[]) {
+        await getManager().transaction(async transactionalEntityManager => {
+            const group =
+                await transactionalEntityManager.findOneOrFail(GroupModel, groupId);
+            const users =
+                await transactionalEntityManager.findByIds(UserModel, userIds, { relations: ["groups"] });
+            users.forEach((user) => { user.groups.push(group) })
+            await transactionalEntityManager.save(users);
+        })
     }
 }

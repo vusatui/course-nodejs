@@ -24,7 +24,7 @@ export default class UserService {
     }
 
     async getById(id: number) {
-        return UserModel.findOneOrFail(id);
+        return UserModel.findOneOrFail(id, { relations: ["groups"] });
     }
 
     async updateUser(id: number, userDTO: User) {

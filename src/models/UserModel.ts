@@ -3,7 +3,10 @@ import {
     PrimaryGeneratedColumn,
     Column,
     BaseEntity,
+    ManyToMany,
+    JoinTable,
 } from "typeorm";
+import GroupModel from "./GroupModel";
 
 
 @Entity()
@@ -22,4 +25,8 @@ export default class UserModel extends BaseEntity {
 
     @Column({ default: false })
     isDeleted: boolean;
+
+    @ManyToMany(() => GroupModel, { cascade: true })
+    @JoinTable({ name: "UserGroup" })
+    groups: GroupModel[];
 }
