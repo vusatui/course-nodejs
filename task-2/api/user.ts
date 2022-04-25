@@ -60,12 +60,14 @@ const validateUser: RequestHandler = (req, res, next) => {
 
 export default (router: IRouter, usersStorage: Array<User>) => {
     router.param("id", (req, res, next, id) => {
-        res.locals.user = usersStorage.find((user) => user.id === id);
+        res.locals.user = usersStorage.find((user) => user.id === id && user.isDeleted === false);
         next();
     });
 
     router.get("/:id", validateUser, (req, res) => {
-        res.json({ body: res.locals.user, message: "ok" });
+        res.locals.user ?
+            res.json({ body: res.locals.user, message: "ok" }) :
+            res.status(404).json({ message: "User not found" });
     });
 
     router.post("/", validator.body(CreateUserSchema), (req: ValidatedRequest<CreateUserRequestSchema>, res) => {
