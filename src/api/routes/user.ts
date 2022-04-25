@@ -5,18 +5,19 @@ import { Container } from "typedi";
 
 import validateUserDTO from "../middlewares/validateUserDTO";
 import UserService from "../../services/UserService";
+import logRequest from "../middlewares/logRequest";
 
 const userRouter = Router();
 const userService = Container.get(UserService);
 
-userRouter.post("/", validateUserDTO(), async (req, res) => {
+userRouter.post("/", logRequest(), validateUserDTO(), async (req, res) => {
     const id = await userService.createUser(req.body);
 
     res.json({ result: { id }, message: "ok" });
 });
 
 
-userRouter.get("/getAutoSuggestUsers", async (req, res) => {
+userRouter.get("/getAutoSuggestUsers", logRequest(), async (req, res) => {
     try {
         const {
             loginSubstring,
@@ -31,7 +32,7 @@ userRouter.get("/getAutoSuggestUsers", async (req, res) => {
     }
 });
 
-userRouter.get("/:id", async (req, res) => {
+userRouter.get("/:id", logRequest(), async (req, res) => {
     try {
         const user = await userService.getById(Number(req.params.id));
 
@@ -41,7 +42,7 @@ userRouter.get("/:id", async (req, res) => {
     }
 });
 
-userRouter.put("/:id", validateUserDTO(), async (req, res) => {
+userRouter.put("/:id", logRequest(), validateUserDTO(), async (req, res) => {
     try {
         const id = await userService.updateUser(Number(req.params.id), req.body);
 
@@ -51,7 +52,7 @@ userRouter.put("/:id", validateUserDTO(), async (req, res) => {
     }
 });
 
-userRouter.delete("/:id", async (req, res) => {
+userRouter.delete("/:id", logRequest(), async (req, res) => {
     try {
         const id = await userService.deleteUser(Number(req.params.id));
 

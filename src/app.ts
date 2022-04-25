@@ -3,8 +3,10 @@ import { bootstrapMicroframework } from "microframework";
 
 import { expressLoader } from "./loaders/expressLoader";
 import { typeOrmLoader } from "./loaders/typeOrmLoader";
+import {loggerLoader} from "./loaders/loggerLoader";
 
 bootstrapMicroframework([
+    loggerLoader,
     typeOrmLoader,
     expressLoader,
 ])
