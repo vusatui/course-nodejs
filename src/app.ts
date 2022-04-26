@@ -16,6 +16,7 @@ bootstrapMicroframework([
     .catch((error) => console.log("Application is crashed: " + error));
 
 const handleUncaughtError = (error: Error) => {
+    console.log("UncaughtError")
     const logger: Logger = Container.get("logger");
     logger.error(error.stack);
 };

@@ -6,11 +6,12 @@ import { Container } from "typedi";
 import validateUserDTO from "../middlewares/validateUserDTO";
 import UserService from "../../services/UserService";
 import logRequest from "../middlewares/logRequest";
+import validateToken from "../middlewares/validateToken";
 
 const userRouter = Router();
 const userService = Container.get(UserService);
 
-userRouter.post("/", logRequest(), validateUserDTO(), async (req, res) => {
+userRouter.post("/", logRequest(), validateToken(), validateUserDTO(), async (req, res) => {
     const id = await userService.createUser(req.body);
 
     res.json({ result: { id }, message: "ok" });

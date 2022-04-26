@@ -53,4 +53,8 @@ export default class UserService {
 
         return UserModel.find(options);
     }
+
+    async getUserByNameAndPassword(login: string, password: string) {
+        return UserModel.findOneOrFail({ where: { login, password }, relations: ["groups"] });
+    }
 }

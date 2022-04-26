@@ -5,6 +5,10 @@ import { Logger } from "winston";
 import config from "../config";
 import apiV1 from "../api";
 import logRequest from "../api/middlewares/logRequest";
+import { BadRequestError } from "../errors/BadRequestError";
+import { NotFoundError } from "../errors/NotFoundError";
+import { UnauthorizedError } from "../errors/UnauthorizedError";
+import {ForbiddenError} from "../errors/ForbiddenError";
 
 
 export const expressLoader = () => {
@@ -16,8 +20,12 @@ export const expressLoader = () => {
         const timer = logger.startTimer();
 
         res.on("close", () => {
-            timer.done({ path: req.url });
+            timer.done({ path: req.originalUrl });
         })
+        res.on("error", () => {
+            timer.done({ path: req.originalUrl });
+        })
+
 
         next();
     });
@@ -26,11 +34,31 @@ export const expressLoader = () => {
     app.all("/status",
         logRequest(),
         (req, res) => res.end("ok"),
-        );
+    );
 
     app.use(async (err, req, res, next) => {
-        logger.error(err.stack);
-        res.status(500).send('Server Error');
+        let status = 500;
+        let message = "Server Error";
+
+        if (err instanceof BadRequestError) {
+            status = 400;
+            message = err.message;
+        } else
+        if (err instanceof NotFoundError) {
+            status = 404;
+            message = err.message;
+        } else
+        if (err instanceof UnauthorizedError) {
+            status = 401;
+            message = err.message;
+        } else
+        if (err instanceof ForbiddenError) {
+            status = 403;
+            message = err.message;
+        }
+
+
+        res.status(status).json({ message });
     });
 
     app.listen(config.expressPort, () => console.log(`Server listening on port: ${config.expressPort}`))
