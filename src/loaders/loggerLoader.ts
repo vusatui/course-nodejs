@@ -1,7 +1,7 @@
 import  *  as  winston  from  'winston';
 import  DailyRotateFile from 'winston-daily-rotate-file';
-
 import { Container } from "typedi";
+import { transports } from "winston";
 
 export const loggerLoader = () => {
     const transport: DailyRotateFile = new DailyRotateFile({
@@ -15,6 +15,7 @@ export const loggerLoader = () => {
     const logger = winston.createLogger({
         transports: [
             transport,
+            new transports.Console()
         ]});
 
     Container.set("logger", logger);
