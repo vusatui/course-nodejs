@@ -2,6 +2,7 @@ import { Router } from "express";
 import { Container } from "typedi";
 import GroupService from "../../services/GroupService";
 import logRequest from "../middlewares/logRequest";
+import validateToken from "../middlewares/validateToken";
 
 const groupRouter = Router();
 const groupService = Container.get(GroupService);
@@ -14,7 +15,7 @@ const handler = async (cb: () => Promise<void>, res) => {
     }
 }
 
-groupRouter.post("/", logRequest(), async (req, res) => {
+groupRouter.post("/", logRequest(), validateToken(), async (req, res) => {
    await handler(async () => {
             const {
                 name,
@@ -50,7 +51,7 @@ groupRouter.get("/:id", logRequest(), async (req, res) => {
     }, res);
 });
 
-groupRouter.put("/:id", logRequest(), async (req, res) => {
+groupRouter.put("/:id", logRequest(), validateToken(), async (req, res) => {
     await handler(async () => {
         const {
             name,
@@ -63,7 +64,7 @@ groupRouter.put("/:id", logRequest(), async (req, res) => {
     }, res);
 });
 
-groupRouter.delete("/:id", logRequest(), async (req, res) => {
+groupRouter.delete("/:id", logRequest(), validateToken(), async (req, res) => {
     await handler(async () => {
         await groupService.deleteGroup(req.params.id);
         res.json({ message: "ok" });

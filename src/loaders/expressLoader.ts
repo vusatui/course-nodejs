@@ -1,6 +1,7 @@
 import express from "express";
 import { Container } from "typedi";
 import { Logger } from "winston";
+import cors from "cors";
 
 import config from "../config";
 import apiV1 from "../api";
@@ -8,7 +9,7 @@ import logRequest from "../api/middlewares/logRequest";
 import { BadRequestError } from "../errors/BadRequestError";
 import { NotFoundError } from "../errors/NotFoundError";
 import { UnauthorizedError } from "../errors/UnauthorizedError";
-import {ForbiddenError} from "../errors/ForbiddenError";
+import { ForbiddenError } from "../errors/ForbiddenError";
 
 
 export const expressLoader = () => {
@@ -30,6 +31,9 @@ export const expressLoader = () => {
         next();
     });
     app.use(config.api.v1.prefix, apiV1());
+
+
+    app.options('*', cors())
 
     app.all("/status",
         logRequest(),

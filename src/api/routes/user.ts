@@ -43,7 +43,7 @@ userRouter.get("/:id", logRequest(), async (req, res) => {
     }
 });
 
-userRouter.put("/:id", logRequest(), validateUserDTO(), async (req, res) => {
+userRouter.put("/:id", logRequest(), validateToken(), validateUserDTO(), async (req, res) => {
     try {
         const id = await userService.updateUser(Number(req.params.id), req.body);
 
@@ -53,7 +53,7 @@ userRouter.put("/:id", logRequest(), validateUserDTO(), async (req, res) => {
     }
 });
 
-userRouter.delete("/:id", logRequest(), async (req, res) => {
+userRouter.delete("/:id", logRequest(), validateToken(), async (req, res) => {
     try {
         const id = await userService.deleteUser(Number(req.params.id));
 
