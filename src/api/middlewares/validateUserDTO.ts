@@ -5,10 +5,9 @@ import {
 import { Container } from "typedi";
 import UserService from "../../services/UserService";
 
-
-const userService = Container.get(UserService);
-
 export default () => async (req: Request, res: Response, next) => {
+    const userService = Container.get(UserService);
+
     try {
         await userService.validateUserDTO(req.body);
         next();

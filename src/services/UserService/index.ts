@@ -4,6 +4,7 @@ import {
 
 import { User } from "./types";
 import UserRepositoryService from "../UserRepositoryService";
+import UserModel from "../../models/UserModel";
 
 
 @Service()
@@ -18,23 +19,23 @@ export default class UserService {
     }
 
     async createUser(userDTO: User) {
-       await this.userRepositoryService.createUser(userDTO);
+       return  this.userRepositoryService.createUser(userDTO);
     }
 
     async getById(id: number) {
-        await this.userRepositoryService.getById(id);
+        return this.userRepositoryService.getById(id);
     }
 
     async updateUser(id: number, userDTO: User) {
-        await this.userRepositoryService.updateUser(id, userDTO);
+        return this.userRepositoryService.updateUser(id, userDTO);
     }
 
     async deleteUser(id: number) {
-        await this.userRepositoryService.deleteUser(id);
+        return this.userRepositoryService.deleteUser(id);
     }
 
     async getAutoSuggestUsers(loginSubstring: string, limit: number) {
-        await this.userRepositoryService.getAutoSuggestUsers(loginSubstring, limit);
+        return this.userRepositoryService.getAutoSuggestUsers(loginSubstring, limit);
     }
 
     async getUserByNameAndPassword(login: string, password: string) {
