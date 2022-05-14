@@ -8,7 +8,9 @@ import {
 import {
     Permission
 } from "../services/GroupService/types"
+import {Service} from "typedi";
 
+@Service()
 @Entity({
     name: "Groups",
 })

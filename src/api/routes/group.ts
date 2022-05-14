@@ -1,75 +1,57 @@
 import { Router } from "express";
 import { Container } from "typedi";
 import GroupService from "../../services/GroupService";
-import logRequest from "../middlewares/logRequest";
 import validateToken from "../middlewares/validateToken";
 
 const groupRouter = Router();
 const groupService = Container.get(GroupService);
 
-const handler = async (cb: () => Promise<void>, res) => {
-    try {
-        await cb();
-    } catch(error) {
-        res.status(400).json({ error: { message: error.message } });
+const handlerWrapper = fn =>
+    function asyncUtilWrap(...args) {
+        const fnReturn = fn(...args)
+        const next = args[args.length - 1]
+        return Promise.resolve(fnReturn).catch(next)
     }
-}
 
-groupRouter.post("/", logRequest(), validateToken(), async (req, res) => {
-   await handler(async () => {
-            const {
-                name,
-                permissions,
-            } = req.body;
+groupRouter.post("/", validateToken(), handlerWrapper(async (req, res) => {
+    const {
+        name,
+        permissions,
+    } = req.body;
 
-           const id = await groupService.createGroup(name, permissions);
-           res.json({ result: { id }, message: "ok" });
-       },
-       res,
-   );
-});
+    const id = await groupService.createGroup(name, permissions);
+    res.json({ result: { id } });
+}));
 
-groupRouter.post("/addUsersToGroup", logRequest(), async (req, res) => {
-   await handler(async () => {
-            const {
-                groupId,
-                userIds,
-            } = req.body;
+groupRouter.post("/addUsersToGroup", validateToken(), handlerWrapper(async (req, res) => {
+    const {
+        groupId,
+        userIds,
+    } = req.body;
 
-           await groupService.addUsersToGroup(groupId, userIds);
-           res.json({ message: "ok" });
-       },
-       res,
-   );
-});
+    await groupService.addUsersToGroup(groupId, userIds);
+    res.end();
+}));
 
-groupRouter.get("/:id", logRequest(), async (req, res) => {
-    await handler(async () => {
-        const group = await groupService.getById(req.params.id);
+groupRouter.get("/:id", handlerWrapper(async (req, res) => {
+    res.json({ result: { group: await groupService.getById(req.params.id) } });
+}));
 
-        res.json({ result: { group }, message: "ok" });
-    }, res);
-});
+groupRouter.put("/:id", validateToken(), handlerWrapper(async (req, res) => {
+    const {
+        name,
+        permissions,
+    } = req.body;
 
-groupRouter.put("/:id", logRequest(), validateToken(), async (req, res) => {
-    await handler(async () => {
-        const {
-            name,
-            permissions,
-        } = req.body;
+    const id = await groupService.updateGroup(req.params.id, name, permissions);
 
-        const id = await groupService.updateGroup(req.params.id, name, permissions);
+    res.json({ result: { id } });
+}));
 
-        res.json({ result: { id }, message: "ok" });
-    }, res);
-});
-
-groupRouter.delete("/:id", logRequest(), validateToken(), async (req, res) => {
-    await handler(async () => {
-        await groupService.deleteGroup(req.params.id);
-        res.json({ message: "ok" });
-    }, res);
-});
+groupRouter.delete("/:id", validateToken(), handlerWrapper(async (req, res) => {
+    await groupService.deleteGroup(req.params.id);
+    res.end();
+}));
 
 export default (router: Router) => {
     router.use("/group", groupRouter);

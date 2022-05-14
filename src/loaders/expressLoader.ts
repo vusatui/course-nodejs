@@ -2,10 +2,12 @@ import express from "express";
 import { Container } from "typedi";
 import { Logger } from "winston";
 import cors from "cors";
+import morgan from "morgan";
 
 import config from "../config";
 import apiV1 from "../api";
 import logRequest from "../api/middlewares/logRequest";
+
 import { BadRequestError } from "../errors/BadRequestError";
 import { NotFoundError } from "../errors/NotFoundError";
 import { UnauthorizedError } from "../errors/UnauthorizedError";
@@ -31,12 +33,14 @@ export const expressLoader = () => {
         next();
     });
     app.use(config.api.v1.prefix, apiV1());
+    app.use(logRequest);
+    app.use(morgan('combined'));
 
 
     app.options('*', cors())
 
-    app.all("/status",
-        logRequest(),
+    app.all(
+        "/status",
         (req, res) => res.end("ok"),
     );
 
