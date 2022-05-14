@@ -1,0 +1,53 @@
+import {User} from "./UserService/types";
+import UserModel from "../models/UserModel";
+import { FindManyOptions } from "typeorm/find-options/FindManyOptions";
+import { Like } from "typeorm";
+import UserSchema from "./UserService/UserSchema";
+import { Service } from "typedi";
+
+@Service()
+export default class UserRepositoryService {
+
+    async validateUserDTO(userDTO: User) {
+        await UserSchema.validateAsync(userDTO, { abortEarly: false });
+    }
+
+    async createUser(userDTO: User) {
+        const user = await UserModel.save(
+            UserModel.create(userDTO)
+        );
+
+        return user.id;
+    }
+
+    async getById(id: number) {
+        return UserModel.findOneOrFail(id, { relations: ["groups"] });
+    }
+
+    async updateUser(id: number, userDTO: User) {
+        const user = await UserModel.findOneOrFail(id);
+        user.login = userDTO.login;
+        user.password = userDTO.password;
+        user.age = userDTO.age;
+        await UserModel.update(user.id, user);
+        return user.id;
+    }
+
+    async deleteUser(id: number) {
+        const user = await UserModel.findOneOrFail(id);
+        user.isDeleted = true;
+        await UserModel.update(user.id, user);
+        return user.id;
+    }
+
+    async getAutoSuggestUsers(loginSubstring: string, limit: number) {
+        const options: FindManyOptions<UserModel> = {
+            take: limit || 100,
+            where: {
+                login: Like(`%${loginSubstring.trim()}%`),
+            },
+        };
+
+        return UserModel.find(options);
+    }
+}
