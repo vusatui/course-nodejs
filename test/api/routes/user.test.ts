@@ -3,30 +3,12 @@ import express, { Application, Router } from "express";
 import userRoutes from "../../../src/api/routes/user"
 import UserService from "../../../src/services/UserService";
 import UserRepositoryService from "../../../src/services/UserRepositoryService";
-import mockedUserId from "../../mocks/mockedUserId";
 import {Connection, createConnection} from "typeorm";
-
-// UserService.prototype.createUser = jest.fn().mockResolvedValue(mockedUserId);
-
-// jest.mock(
-//     ".../../../src/services/UserService",
-//     () => {
-//         return class UserServiceMock {
-//             createUser() {
-//                 return Promise.resolve(mockedUserId);
-//             }
-//         }
-//     },
-// );
 
 jest.mock(
     "../../../src/api/middlewares/validateToken",
     () => jest.fn(() => (req, res, next) => next()),
 );
-// jest.mock(
-//     "../../../src/api/middlewares/validateUserDTO",
-//     () => jest.fn(() => (req, res, next) => next()),
-// );
 jest.mock(
     "../../../src/api/middlewares/logRequest",
     () => jest.fn(() => (req, res, next) => next()),
