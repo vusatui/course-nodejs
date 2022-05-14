@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { Container } from "typedi";
 import GroupService from "../../services/GroupService";
-import logRequest from "../middlewares/logRequest";
 
 const groupRouter = Router();
 const groupService = Container.get(GroupService);
@@ -13,7 +12,7 @@ const handlerWrapper = fn =>
         return Promise.resolve(fnReturn).catch(next)
     }
 
-groupRouter.post("/", logRequest(), handlerWrapper(async (req, res) => {
+groupRouter.post("/", handlerWrapper(async (req, res) => {
     const {
         name,
         permissions,
@@ -23,7 +22,7 @@ groupRouter.post("/", logRequest(), handlerWrapper(async (req, res) => {
     res.json({ result: { id } });
 }));
 
-groupRouter.post("/addUsersToGroup", logRequest(), handlerWrapper(async (req, res) => {
+groupRouter.post("/addUsersToGroup", handlerWrapper(async (req, res) => {
     const {
         groupId,
         userIds,
@@ -33,11 +32,11 @@ groupRouter.post("/addUsersToGroup", logRequest(), handlerWrapper(async (req, re
     res.end();
 }));
 
-groupRouter.get("/:id", logRequest(), handlerWrapper(async (req, res) => {
+groupRouter.get("/:id", handlerWrapper(async (req, res) => {
     res.json({ result: { group: await groupService.getById(req.params.id) } });
 }));
 
-groupRouter.put("/:id", logRequest(), handlerWrapper(async (req, res) => {
+groupRouter.put("/:id", handlerWrapper(async (req, res) => {
     const {
         name,
         permissions,
@@ -48,7 +47,7 @@ groupRouter.put("/:id", logRequest(), handlerWrapper(async (req, res) => {
     res.json({ result: { id } });
 }));
 
-groupRouter.delete("/:id", logRequest(), handlerWrapper(async (req, res) => {
+groupRouter.delete("/:id", handlerWrapper(async (req, res) => {
     await groupService.deleteGroup(req.params.id);
     res.end();
 }));

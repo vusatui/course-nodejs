@@ -36,6 +36,7 @@
     "express": "^4.17.3",
     "joi": "^17.6.0",
     "microframework": "^0.6.4",
+    "morgan": "^1.10.0",
     "pg": "^8.7.3",
     "reflect-metadata": "^0.1.13",
     "typedi": "^0.10.0",

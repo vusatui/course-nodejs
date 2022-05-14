@@ -1,11 +1,10 @@
 import express from "express";
 import { Container } from "typedi";
 import { Logger } from "winston";
-
 import config from "../config";
 import apiV1 from "../api";
 import logRequest from "../api/middlewares/logRequest";
-
+import morgan from "morgan";
 
 export const expressLoader = () => {
     const app = express();
@@ -22,9 +21,11 @@ export const expressLoader = () => {
         next();
     });
     app.use(config.api.v1.prefix, apiV1());
+    app.use(logRequest);
+    app.use(morgan('combined'));
 
-    app.all("/status",
-        logRequest(),
+    app.all(
+        "/status",
         (req, res) => res.end("ok"),
         );
 
