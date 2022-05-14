@@ -7,8 +7,9 @@ import {
     JoinTable,
 } from "typeorm";
 import GroupModel from "./GroupModel";
+import { Service } from "typedi";
 
-
+@Service()
 @Entity()
 export default class UserModel extends BaseEntity {
     @PrimaryGeneratedColumn()
