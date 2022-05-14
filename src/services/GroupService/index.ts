@@ -4,51 +4,32 @@ import {
 import {
     Permission,
 } from "./types";
-import GroupModel from "../../models/GroupModel";
-import UserModel from "../../models/UserModel";
-import {getManager} from "typeorm";
+import GroupRepositoryService from "../GroupRepositoryService";
 
 @Service()
 export default class GroupService {
+
+    constructor(
+        private groupRepositoryService: GroupRepositoryService,
+    ) {}
+
     async getById(id: string) {
-        return GroupModel.findOneOrFail(id);
+        return this.groupRepositoryService.getById(id);
     }
 
     async createGroup(name, permissions: Permission[]) {
-        const group = await GroupModel.save(
-            GroupModel.create({
-                name,
-                permissions,
-            }),
-        );
-
-        return group.id;
+       return this.groupRepositoryService.createGroup(name, permissions);
     }
 
     async updateGroup(id: string, name: string, permissions: Permission[]) {
-            const group = await this.getById(id);
-            if (name) {
-                group.name = name;
-            }
-            if (permissions && permissions.length > 0) {
-                group.permissions = permissions;
-            }
-            await GroupModel.update(id, group);
-            return id;
+        return this.groupRepositoryService.updateGroup(id, name, permissions);
     }
 
     async deleteGroup(id: string) {
-        await GroupModel.delete(id);
+        await this.groupRepositoryService.deleteGroup(id);
     }
 
     async addUsersToGroup(groupId: string, userIds: string[]) {
-        await getManager().transaction(async transactionalEntityManager => {
-            const group =
-                await transactionalEntityManager.findOneOrFail(GroupModel, groupId);
-            const users =
-                await transactionalEntityManager.findByIds(UserModel, userIds, { relations: ["groups"] });
-            users.forEach((user) => { user.groups.push(group) })
-            await transactionalEntityManager.save(users);
-        })
+        await this.groupRepositoryService.addUsersToGroup(groupId, userIds);
     }
 }
