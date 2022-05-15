@@ -79,10 +79,10 @@ describe("Testing user routes", () => {
     test("PUT user by id", async () => {
         const response = await request(app)
             .put( `/user/${createdUserId}`)
-            .send({ login: "test" });
+            .send({ login: "test", password: userDTO.password, age: userDTO.age });
 
         expect(response.status).toBe(200);
-        expect(response.body.result.user.login).toBe("test");
+        expect(response.body.result.id).toBe(createdUserId);
     });
 
     test("DELETE user by id", async () => {

@@ -31,7 +31,7 @@ export default class GroupRepositoryService {
             group.permissions = permissions;
         }
         await GroupModel.update(id, group);
-        return id;
+        return group.id;
     }
 
     async deleteGroup(id: string) {
