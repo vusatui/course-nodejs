@@ -26,6 +26,11 @@ apiV1.get("/getAutoSuggestUsers", (req, res) => {
             .filter(
                 (user) => user.login.includes(loginSubstring || "")
             )
+            .map((user) => {
+                const userWithoutIsDeleted = {...user};
+                delete userWithoutIsDeleted.isDeleted;
+                return userWithoutIsDeleted;
+            })
             .sort(
                 (a, b) => a.login > b.login ? 1 : -1
             )
