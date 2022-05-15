@@ -22,7 +22,9 @@ const validateUser: RequestHandler = (req, res, next) => {
 
 export default (router: IRouter, usersStorage: Array<User>) => {
     router.param("id", (req, res, next, id) => {
-        res.locals.user = usersStorage.find((user) => user.id === id);
+        const {...user} = usersStorage.find((user) => user.id === id);
+        delete user.isDeleted;
+        res.locals.user = user;
         next();
     });
 
